@@ -39,7 +39,7 @@ class Detect(nn.Module):
     onnx_dynamic = False  # ONNX export parameter
     export = False  # export mode
 
-    def __init__(self, nc=80, anchors=(), ch=(), inplace=True):  # detection layer
+    def __init__(self, nc=3, anchors=(), ch=(), inplace=True):  # detection layer
         super().__init__()
         self.nc = nc  # number of classes
         self.no = nc + 5  # number of outputs per anchor
@@ -266,7 +266,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
 
         n = n_ = max(round(n * gd), 1) if n > 1 else n  # depth gain
         if m in (Conv, GhostConv, Bottleneck, GhostBottleneck, SPP, SPPF, DWConv, MixConv2d, Focus, CrossConv,
-                 BottleneckCSP, C3, C3TR, C3SPP, C3Ghost, nn.ConvTranspose2d, DWConvTranspose2d, C3x):
+                 BottleneckCSP, C3, C3TR, C3SPP, C3Ghost, nn.ConvTranspose2d, DWConvTranspose2d, C3x, InvertedResidual,ConvBNHswish, SELayer,MblNetV3_Blk):
             c1, c2 = ch[f], args[0]
             if c2 != no:  # if not output
                 c2 = make_divisible(c2 * gw, 8)

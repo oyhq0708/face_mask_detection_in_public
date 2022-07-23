@@ -27,6 +27,9 @@ from utils.general import (LOGGER, check_requirements, check_suffix, check_versi
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import copy_attr, time_sync
 
+from torch import Tensor
+from typing import Callable, Any, List
+
 
 def autopad(k, p=None):  # kernel, padding
     # Pad to 'same'
@@ -736,3 +739,163 @@ class Classify(nn.Module):
     def forward(self, x):
         z = torch.cat([self.aap(y) for y in (x if isinstance(x, list) else [x])], 1)  # cat if list
         return self.flat(self.conv(z))  # flatten to x(b,c2)
+
+
+def channel_shuffle(x: Tensor, groups: int) -> Tensor:
+    batchsize, num_channels, height, width = x.size()
+    channels_per_group = num_channels // groups
+
+    # reshape
+    x = x.view(batchsize, groups,
+               channels_per_group, height, width)
+
+    x = torch.transpose(x, 1, 2).contiguous()
+
+    # flatten
+    x = x.view(batchsize, -1, height, width)
+
+    return x
+
+
+class InvertedResidual(nn.Module):
+    def __init__(
+            self,
+            inp: int,
+            oup: int,
+            stride: int
+    ) -> None:
+        super(InvertedResidual, self).__init__()
+
+        if not (1 <= stride <= 3):
+            raise ValueError('illegal stride value')
+        self.stride = stride
+
+        branch_features = oup // 2
+        assert (self.stride != 1) or (inp == branch_features << 1)
+
+        if self.stride > 1:
+            self.branch1 = nn.Sequential(
+                self.depthwise_conv(inp, inp, kernel_size=3, stride=self.stride, padding=1),
+                nn.BatchNorm2d(inp),
+                nn.Conv2d(inp, branch_features, kernel_size=1, stride=1, padding=0, bias=False),
+                nn.BatchNorm2d(branch_features),
+                nn.ReLU(inplace=True),
+            )
+        else:
+            self.branch1 = nn.Sequential()
+
+        self.branch2 = nn.Sequential(
+            nn.Conv2d(inp if (self.stride > 1) else branch_features,
+                      branch_features, kernel_size=1, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(branch_features),
+            nn.ReLU(inplace=True),
+            self.depthwise_conv(branch_features, branch_features, kernel_size=3, stride=self.stride, padding=1),
+            nn.BatchNorm2d(branch_features),
+            nn.Conv2d(branch_features, branch_features, kernel_size=1, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(branch_features),
+            nn.ReLU(inplace=True),
+        )
+
+    @staticmethod
+    def depthwise_conv(
+            i: int,
+            o: int,
+            kernel_size: int,
+            stride: int = 1,
+            padding: int = 0,
+            bias: bool = False
+    ) -> nn.Conv2d:
+        return nn.Conv2d(i, o, kernel_size, stride, padding, bias=bias, groups=i)
+
+    def forward(self, x: Tensor) -> Tensor:
+        if self.stride == 1:
+            x1, x2 = x.chunk(2, dim=1)
+            out = torch.cat((x1, self.branch2(x2)), dim=1)
+        else:
+            out = torch.cat((self.branch1(x), self.branch2(x)), dim=1)
+
+        out = channel_shuffle(out, 2)
+
+        return out
+class ConvBNHswish(nn.Module):
+    def __init__(self, c1, c2, stride):
+        super(ConvBNHswish, self).__init__()
+        self.conv = nn.Conv2d(c1, c2, 3, stride, 1, bias=False)
+        self.bn = nn.BatchNorm2d(c2)
+        self.act = nn.Hardswish(inplace=True)
+
+    def forward(self, x):
+        return self.act(self.bn(self.conv(x)))
+
+    def fuseforward(self, x):
+        return self.act(self.conv(x))
+
+class SELayer(nn.Module):
+    def __init__(self, channel, reduction=4):
+        super(SELayer, self).__init__()
+        # Squeeze operation
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Sequential(
+            nn.Linear(channel, channel // reduction),
+            nn.ReLU(inplace=True),
+            nn.Linear(channel // reduction, channel),
+            nn.Hardsigmoid(inplace=True)
+        )
+
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        y = self.avg_pool(x)
+        y = y.view(b, c)
+        y = self.fc(y).view(b, c, 1, 1)
+        return x * y
+class MblNetV3_Blk(nn.Module):
+    def __init__(self, inp, oup, hidden_dim, kernel_size, stride, use_se,
+                 use_hs):
+        super(MblNetV3_Blk, self).__init__()
+        assert stride in [1, 2]
+        self.identity = stride == 1 and inp == oup
+        # if int_channel = out_channel, there will be no channel expansion
+        if inp == hidden_dim:
+            self.conv = nn.Sequential(
+                # dw
+                nn.Conv2d(hidden_dim, hidden_dim, kernel_size, stride,
+                          (kernel_size - 1) // 2, groups=hidden_dim,
+                          bias=False),
+                nn.BatchNorm2d(hidden_dim),
+                nn.Hardswish(inplace=True) if use_hs else
+                nn.ReLU(inplace=True),
+                # Squeeze-and-Excite
+                SELayer(hidden_dim) if use_se else nn.Sequential(),
+                # pw-linear
+                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
+                nn.BatchNorm2d(oup),
+            )
+        else:
+            self.conv = nn.Sequential(
+                # pw
+                nn.Conv2d(inp, hidden_dim, 1, 1, 0, bias=False),
+                nn.BatchNorm2d(hidden_dim),
+                nn.Hardswish(inplace=True) if use_hs else
+                nn.ReLU(inplace=True),
+                # dw
+                nn.Conv2d(hidden_dim, hidden_dim, kernel_size, stride,
+                          (kernel_size - 1) // 2, groups=hidden_dim,
+                          bias=False),
+                nn.BatchNorm2d(hidden_dim),
+                # Squeeze-and-Excite
+                SELayer(hidden_dim) if use_se else nn.Sequential(),
+                nn.Hardswish(inplace=True) if use_hs else
+                nn.ReLU(inplace=True),
+                # pw-linear
+                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
+                nn.BatchNorm2d(oup),
+            )
+
+    def forward(self, x):
+        y = self.conv(x)
+        if self.identity:
+            return x + y
+        else:
+            return y
+
+
