@@ -31,6 +31,9 @@ One is for the basic 3 classes, the other one is an advanced path that is able t
 `train.py`  
 `utils/plots.py`  
 `utils/loss.py`  
+`models/yolo.py`
+`models/common.py`
+
 ### created files
 `data/hyps/hyp_mask.yaml`  
 `data/mask.yaml`  
