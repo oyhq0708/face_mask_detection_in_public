@@ -16,8 +16,13 @@ YOLOv5 requires a special format of annotations, so we provide scripts in `data_
 training with original YOLOv5 architecture, run `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml`  
 training with transformer, mobilenet or shufflenet structure, specify the configuration yaml file in `models/transformers` or `models/mobilenet_shufflenet`. One example is `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml --cfg models/transformers/yolov5l-transformer.yaml`  
 
-## detect
+## trained paths that can be used to run validation and detection
+download from https://drive.google.com/drive/folders/1j6IkElVvAPfFAob2qfBZa1T0A3T7NjXc?usp=sharing
+One is for the basic 3 classes, the other one is an advanced path that is able to detect the type of the mask. To run the advanced version, use `--data more_mask_classes.yaml` and prepare the dataset accordingly.
 
+## validate
+
+## detect
 
 ## demo
 
