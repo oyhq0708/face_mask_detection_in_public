@@ -34,6 +34,6 @@ training with transformer, mobilenet or shufflenet structure, specify the config
 `data_preprocessing/redistribute_data.py`  
 `data_preprocessing/generate_txt_annotations.py`  
 `count_labels.py`  
-`models/transformers/yolov5l-transformer.yaml`
+`models/transformers/yolov5l-transformer.yaml`  
 `models/mobilenet_shufflenet/
 `demo_raw_videos` folder
