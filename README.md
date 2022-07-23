@@ -14,14 +14,26 @@ YOLOv5 requires a special format of annotations, so we provide scripts in `data_
 
 ## train
 training with original YOLOv5 architecture, run `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml`  
-training with transformer, mobilenet or shufflenet structure, specify the configuration yaml file in `models/transformers` or `models/mobilenet_shufflenet`. One example is `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml --cfg models/hub/yolov5l-transformer.yaml`  
+training with transformer, mobilenet or shufflenet structure, specify the configuration yaml file in `models/transformers` or `models/mobilenet_shufflenet`. One example is `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml --cfg models/transformers/yolov5l-transformer.yaml`  
 
 ## detect
 
 
 ## demo
 
-## modified and self-created codes
-### modified codes
-
-### created codes
+## modified and self-created files
+### modified files
+`train.py`  
+`utils/plots.py`  
+`utils/loss.py`  
+### created files
+`data/hyps/hyp_mask.yaml`  
+`data/mask.yaml`  
+`data/more_mask_classes.yaml`  
+`data_preprocessing/rewrite_annotations.py`  
+`data_preprocessing/redistribute_data.py`  
+`data_preprocessing/generate_txt_annotations.py`  
+`count_labels.py`  
+`models/transformers/yolov5l-transformer.yaml`
+`models/mobilenet_shufflenet/
+`demo_raw_videos` folder
