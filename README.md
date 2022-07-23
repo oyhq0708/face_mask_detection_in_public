@@ -10,3 +10,18 @@ Our task is to classify whether an object is belonged to face_with_mask, face_no
 We consider faces covered by non-masks such as scarves as face_no_mask.
 
 ## preprocessing
+YOLOv5 requires a special format of annotations, so we provide scripts in `data_preprocessing` folder to process the data. First run `rewrite_annotations.py`, then `redistribute_data.py`, finally `generate_txt_annotations.py`. Note for each script the paths need to be changed.
+
+## train
+training with original YOLOv5 architecture, run `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml`  
+training with transformer, mobilenet or shufflenet structure, specify the configuration yaml file in `models/transformers` or `models/mobilenet_shufflenet`. One example is `python train.py --img 640 --batch 16 --data mask.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml --cfg models/hub/yolov5l-transformer.yaml`  
+
+## detect
+
+
+## demo
+
+## modified and self-created codes
+### modified codes
+
+### created codes
