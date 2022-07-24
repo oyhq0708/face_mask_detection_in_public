@@ -58,5 +58,9 @@ demo2 on 3 basic classes plus 2 mask types (click to view)
 `data_preprocessing/generate_txt_annotations.py`  
 `count_labels.py`  
 `models/transformers/yolov5l-transformer.yaml`  
-`models/mobilenet_shufflenet/
+`models/mobilenet_shufflenet/yolov5l-mobilenetv3.yaml`  
+`models/mobilenet_shufflenet/yolov5l-shufflenet.yaml`  
+`models/mobilenet_shufflenet/yolov5l-shufflenetv2-focus.yaml`  
+`models/mobilenet_shufflenet/yolov5s+mobilenetv3.yaml`  
+`models/mobilenet_shufflenet/yolov5s+shufflenet.yaml`  
 `demo_raw_videos` folder
