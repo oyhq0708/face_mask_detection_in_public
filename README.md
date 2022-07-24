@@ -25,7 +25,21 @@ One is for the basic 3 classes, the other one is an advanced path that is able t
 ## detect
 
 ## demo
+demo1 on 3 basic classes (click to view)  
 [![1_basic_classes](https://img.youtube.com/vi/2JLqEhV0sOc/0.jpg)](https://www.youtube.com/watch?v=2JLqEhV0sOc)  
+(original video from https://www.bilibili.com/video/BV1zV411m7XF?spm_id_from=333.999.0.0&vd_source=0e7aa368809c558f3313adec21a3df56)  
+
+demo2 on 3 basic classes (click to view)  
+[![2_basic_classes](https://img.youtube.com/vi/uYrjUkY2ADs/0.jpg)](https://www.youtube.com/watch?v=uYrjUkY2ADs)  
+(original video from https://youtu.be/tGkhfd2PuAY)  
+
+demo1 on 3 basic classes plus 2 mask types (click to view)  
+[![1_more_mask_classes](https://img.youtube.com/vi/kjj3JAXRwZQ/0.jpg)](https://www.youtube.com/watch?v=kjj3JAXRwZQ)  
+(original video from https://www.bilibili.com/video/BV1zV411m7XF?spm_id_from=333.999.0.0&vd_source=0e7aa368809c558f3313adec21a3df56)  
+
+demo2 on 3 basic classes plus 2 mask types (click to view)  
+[![2_more_mask_classes](https://img.youtube.com/vi/J-NRoH5uk_o/0.jpg)](https://www.youtube.com/watch?v=J-NRoH5uk_o)  
+(original video from https://youtu.be/tGkhfd2PuAY)  
 
 ## modified and self-created files
 ### modified files
