@@ -9,9 +9,9 @@
 
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
 path: ../../dataset_backup/Medical mask/Medical Mask  # dataset root dir
-train: redistributed_train  # train images (relative to 'path') 128 images
-val: redistributed_leaveout  # val images (relative to 'path') 128 images
-test: redistributed_leaveout # test images (optional)
+train: more_mask_classes_redistributed_train  # train images (relative to 'path') 128 images
+val: more_mask_classes_redistributed_leaveout  # val images (relative to 'path') 128 images
+test: more_mask_classes_redistributed_leaveout # test images (optional)
 
 # Classes
 nc: 5  # number of classes

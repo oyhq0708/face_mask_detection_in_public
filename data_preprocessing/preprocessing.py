@@ -5,7 +5,7 @@ from PIL import Image
 from shutil import copy2
 import random
 
-class_to_category = {'face_with_mask': 0, 'face_no_mask': 1, 'face_with_mask_incorrect': 2, 'mask_colorful': 3, 'mask_surgical': 4}
+class_to_category = {'face_with_mask': 0, 'face_no_mask': 1, 'face_with_mask_incorrect': 2}
 
 def readAnnotations(filename):
     # Opening JSON file
@@ -23,7 +23,7 @@ def readAnnotations(filename):
     for i in data['Annotations']:
         cname = i["classname"]
         bbox = i["BoundingBox"]
-        if cname == "face_with_mask" or cname == "face_no_mask" or cname == "face_with_mask_incorrect" or cname == "face_other_covering" or cname == 'mask_colorful' or cname == 'mask_surgical':
+        if cname == "face_with_mask" or cname == "face_no_mask" or cname == "face_with_mask_incorrect" or cname == "face_other_covering":
             if cname == "face_other_covering":
                 b_and_cname[str(bbox)] = "face_no_mask"
             else:
@@ -43,7 +43,7 @@ def rewrite_json_file(dictionary, new_filename):
 
 
 def generate_txt_annotations(trainOrTest):
-    txt_base_path = '../dataset/Medical Mask/new_more_mask_classes_redistributed_' #change path, but need to keep 'redistributed_'
+    #txt_base_path = '../dataset/Medical Mask/new_more_mask_classes_redistributed_' #change path, but need to keep 'redistributed_'
     txt_images_path = redistributed_base_path + trainOrTest + '_images/'
     txt_annotations_path = redistributed_base_path + trainOrTest + '_annotations/'
     txt_new_images_path = redistributed_base_path + trainOrTest + '/images/'
@@ -86,10 +86,10 @@ def generate_txt_annotations(trainOrTest):
             outfile.write(new_data)
 
 
-base_path = '../../../dataset_backup/Medical mask/Medical Mask/'
+base_path = '../../dataset_backup/Medical mask/Medical Mask/' # change this path
 images_path = base_path + 'images'
 old_annotations_path = base_path + 'annotations'
-annotations_path = base_path + 'annotations_more_mask_classes'
+annotations_path = base_path + 'annotations_rewrite'
 redistributed_base_path = base_path + 'redistributed_'
 new_annotations_path = redistributed_base_path + 'train_annotations'
 new_images_path = redistributed_base_path + 'train_images'
