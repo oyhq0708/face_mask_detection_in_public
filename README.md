@@ -51,7 +51,7 @@ demo2 on 3 basic classes plus 2 mask types (click to view)
 `train.py`  
 `utils/plots.py`  
 `utils/loss.py`  
-`models/yolo.py`
+`models/yolo.py`  
 `models/common.py`
 
 ### created files
