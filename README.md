@@ -20,15 +20,15 @@ training with transformer, mobilenet or shufflenet structure, specify the config
 execute `python train.py --img 640 --batch 16 --data mask_more_classes.yaml --weights yolov5l.pt --hyp data/hyps/hyp_mask.yaml`
 
 ## trained paths that can be used to run validation and detection
-download from https://drive.google.com/drive/folders/1j6IkElVvAPfFAob2qfBZa1T0A3T7NjXc?usp=sharing
+download from https://drive.google.com/drive/folders/1j6IkElVvAPfFAob2qfBZa1T0A3T7NjXc?usp=sharing  
 One is for the basic 3 classes, the other one is an advanced path that is able to detect the type of the mask. To run the advanced version, use `--data more_mask_classes.yaml` and prepare the dataset accordingly.
 
 ## validate
-run `python val.py --img 640 --data mask.yaml --weights YOUR_TRAINED_PATH`
-
+run `python val.py --img 640 --data mask.yaml --weights YOUR_TRAINED_PATH`  
+see val.py for more information
 ## detect
-run `python detect.py --weights YOUR_TRAINED_PATH --source YOUR_SOURCE(videos, images)`
-
+run `python detect.py --weights YOUR_TRAINED_PATH --source YOUR_SOURCE`  
+see detect.py for more information
 ## demo
 demo1 on 3 basic classes (click to view)  
 [![1_basic_classes](https://img.youtube.com/vi/2JLqEhV0sOc/0.jpg)](https://www.youtube.com/watch?v=2JLqEhV0sOc)  
